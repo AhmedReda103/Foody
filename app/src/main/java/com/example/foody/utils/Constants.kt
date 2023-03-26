@@ -1,4 +1,4 @@
-package com.example.foody.ui.utils
+package com.example.foody.utils
 
 object Constants {
 
@@ -13,5 +13,11 @@ object Constants {
     const val QUERY_DIET = "diet"
     const val QUERY_ADD_RECIPES_INFORMATION = "addRecipeInformation"
     const val QUERY_FILL_INGREDIENTS = "fillIngredients"
+
+    //Room Constants
+    const val DATABASE_NAME = "recipes_database"
+    const val RECIPES_TABLE = "recipes_table"
+    const val FAVOURITE_RECIPES_TABLE = "favourite_recipes_table"
+    const val FOOD_JOKES_TABLE = "food_jokes_table"
 
 }

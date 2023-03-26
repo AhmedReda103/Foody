@@ -1,13 +1,13 @@
 package com.example.foody.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.foody.ui.utils.Constants
-import com.example.foody.ui.utils.Constants.QUERY_ADD_RECIPES_INFORMATION
-import com.example.foody.ui.utils.Constants.QUERY_API_KEY
-import com.example.foody.ui.utils.Constants.QUERY_DIET
-import com.example.foody.ui.utils.Constants.QUERY_FILL_INGREDIENTS
-import com.example.foody.ui.utils.Constants.QUERY_NUMBER
-import com.example.foody.ui.utils.Constants.QUERY_TYPE
+import com.example.foody.utils.Constants
+import com.example.foody.utils.Constants.QUERY_ADD_RECIPES_INFORMATION
+import com.example.foody.utils.Constants.QUERY_API_KEY
+import com.example.foody.utils.Constants.QUERY_DIET
+import com.example.foody.utils.Constants.QUERY_FILL_INGREDIENTS
+import com.example.foody.utils.Constants.QUERY_NUMBER
+import com.example.foody.utils.Constants.QUERY_TYPE
 
 
 class RecipesViewModel : ViewModel() {

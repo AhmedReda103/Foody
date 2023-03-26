@@ -12,8 +12,8 @@ import com.example.foody.MainViewModel
 import com.example.foody.R
 import com.example.foody.adapters.RecipesAdapter
 import com.example.foody.databinding.FragmentRecipesBinding
-import com.example.foody.ui.utils.Constants.API_KEY
-import com.example.foody.ui.utils.NetworkResult
+import com.example.foody.utils.Constants.API_KEY
+import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 

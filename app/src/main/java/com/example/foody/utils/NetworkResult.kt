@@ -1,4 +1,4 @@
-package com.example.foody.ui.utils
+package com.example.foody.utils
 
 sealed class NetworkResult <T> (var data :T ?=null , val message :String ?=null ) {
 

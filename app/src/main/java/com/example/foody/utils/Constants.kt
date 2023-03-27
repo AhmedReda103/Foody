@@ -20,4 +20,20 @@ object Constants {
     const val FAVOURITE_RECIPES_TABLE = "favourite_recipes_table"
     const val FOOD_JOKES_TABLE = "food_jokes_table"
 
+    //bottom sheet and datastore
+    const val DEFAULT_MEAL_TYPE = "main course"
+    const val DEFAULT_DIET_TYPE = "gluten free"
+    const val DEFAULT_RECIPES_NUMBER = "50"
+
+    const val PREFERENCES_MEAL_TYPE = "mealType"
+    const val PREFERENCES_MEAL_TYPE_ID = "mealTypeId"
+
+    const val PREFERENCES_DIET_TYPE = "dietType"
+    const val PREFERENCES_DIET_TYPE_Id = "dietTypeId"
+
+    const val PREFERENCES_NAME = "foody preferences "
+
+    const val PREFERENCE_BACK_ONLINE = "backOnline"
+
+
 }

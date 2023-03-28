@@ -13,7 +13,7 @@ class LocalDataSource @Inject constructor(
         recipesDao.insertRecipes(recipesEntity)
     }
 
-    fun readRecipes() : Flow<List<RecipesEntity>>{
+     fun readRecipes() : Flow<List<RecipesEntity>>{
         return recipesDao.readRecipes()
     }
 

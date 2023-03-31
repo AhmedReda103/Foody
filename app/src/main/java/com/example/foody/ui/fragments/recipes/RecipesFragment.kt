@@ -2,13 +2,15 @@ package com.example.foody.ui.fragments.recipes
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RecipesFragment : Fragment() {
+class RecipesFragment : Fragment(), SearchView.OnQueryTextListener , MenuProvider {
 
     private var _binding: FragmentRecipesBinding? = null
     private val binding get() = _binding!!
@@ -45,10 +47,14 @@ class RecipesFragment : Fragment() {
 
         _binding = FragmentRecipesBinding.inflate(inflater, container, false)
 
+        binding.lifecycleOwner = this
+        binding.mainViewModel = mainViewModel
+
+        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         setupRecyclerView()
 
         readDatabase()
-
 
         recipesViewModel.readBackOnline.observe(viewLifecycleOwner){
             Log.d("Network Listener2", it.toString())
@@ -56,12 +62,14 @@ class RecipesFragment : Fragment() {
         }
 
 
-        lifecycleScope.launchWhenStarted {
-            networkListener.checkNetworkAvailable(requireContext()).collectLatest{status ->
-                Log.d("Network Listener", status.toString())
-                recipesViewModel.networkStatus = status
-                recipesViewModel.showNetworkStatus()
-                readDatabase()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                networkListener.checkNetworkAvailable(requireContext()).collectLatest{status ->
+                    Log.d("Network Listener", status.toString())
+                    recipesViewModel.networkStatus = status
+                    recipesViewModel.showNetworkStatus()
+                    readDatabase()
+                }
             }
         }
 
@@ -72,9 +80,31 @@ class RecipesFragment : Fragment() {
                 recipesViewModel.showNetworkStatus()
             }
         }
-
         return binding.root
+    }
 
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.recipes_menu , menu)
+        val search = menu.findItem(R.id.menu_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return true
+    }
+
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if(query!=null){
+            searchRecipesApi(query)
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
     }
 
     private fun readDatabase() {
@@ -89,7 +119,33 @@ class RecipesFragment : Fragment() {
                 }
             }
         }
+    }
 
+    private fun searchRecipesApi(query: String){
+        mainViewModel.searchRecipes(recipesViewModel.applySearchQueries(query))
+        mainViewModel.searchRecipesResponse.observe(viewLifecycleOwner){response->
+            when (response) {
+                is NetworkResult.Loading -> {
+                    showShimmerEffect()
+                }
+                is NetworkResult.Error -> {
+                    hideShimmerEffect()
+                    loadDataFromCache()
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is NetworkResult.Success -> {
+                    hideShimmerEffect()
+                    response.data?.let {
+                        mAdapter.differ.submitList(it.results)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
 
@@ -150,4 +206,9 @@ class RecipesFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
+
+
+
+
 }

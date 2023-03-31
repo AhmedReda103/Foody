@@ -40,7 +40,7 @@
                 <ImageView
                     android:id="@+id/favourite_recipes_imageView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     loadImageFromURL="@{result.image}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

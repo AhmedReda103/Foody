@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foody.data.DataStoreRepository
+import com.example.foody.utils.Constants
 import com.example.foody.utils.Constants.API_KEY
 import com.example.foody.utils.Constants.DEFAULT_DIET_TYPE
 import com.example.foody.utils.Constants.DEFAULT_MEAL_TYPE
@@ -16,6 +17,7 @@ import com.example.foody.utils.Constants.QUERY_API_KEY
 import com.example.foody.utils.Constants.QUERY_DIET
 import com.example.foody.utils.Constants.QUERY_FILL_INGREDIENTS
 import com.example.foody.utils.Constants.QUERY_NUMBER
+import com.example.foody.utils.Constants.QUERY_SEARCH
 import com.example.foody.utils.Constants.QUERY_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +53,7 @@ class RecipesViewModel @Inject constructor(
          }
     }
 
-    fun saveBackOnline(backOnline : Boolean){
+    private fun saveBackOnline(backOnline : Boolean){
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
         }
@@ -65,7 +67,6 @@ class RecipesViewModel @Inject constructor(
             }
         }
 
-
         val queries :HashMap<String , String> = HashMap()
         queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
         queries[QUERY_API_KEY] = API_KEY
@@ -73,6 +74,16 @@ class RecipesViewModel @Inject constructor(
         queries[QUERY_DIET] = dietType
         queries[QUERY_ADD_RECIPES_INFORMATION] = "true"
         queries[QUERY_FILL_INGREDIENTS] = "true"
+        return queries
+    }
+
+    fun applySearchQueries(searchQuery : String):HashMap<String , String>{
+        val queries :HashMap<String , String> = HashMap()
+        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
+        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_ADD_RECIPES_INFORMATION] = "true"
+        queries[QUERY_FILL_INGREDIENTS] = "true"
+        queries[QUERY_SEARCH]= searchQuery
         return queries
     }
 

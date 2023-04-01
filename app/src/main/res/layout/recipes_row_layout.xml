@@ -15,6 +15,7 @@
         android:id="@+id/recipesRowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        onRecipeClickListener="@{result}"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp">
 
@@ -41,6 +42,7 @@
                     android:id="@+id/favourite_recipes_imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
+                    android:scaleType="centerCrop"
                     loadImageFromURL="@{result.image}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +76,7 @@
                     android:layout_marginTop="12dp"
                     android:ellipsize="end"
                     android:maxLines="3"
-                    android:text="@{result.summary}"
+                    parseHtml="@{result.summary}"
                     tools:text="description of item "
                     android:textColor="@color/description_color"
                     app:layout_constraintEnd_toEndOf="@+id/title_textView"

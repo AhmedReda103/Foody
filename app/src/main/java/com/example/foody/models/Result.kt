@@ -1,9 +1,12 @@
 package com.example.foody.models
 
+import android.os.Parcelable
 import com.example.foody.models.ExtendedIngredient
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Parcelize
 data class Result(
 
     @SerializedName("aggregateLikes")
@@ -47,4 +50,4 @@ data class Result(
     val vegetarian: Boolean? = null,
     @SerializedName("veryHealthy")
     val veryHealthy: Boolean? = null
-)
+):Parcelable

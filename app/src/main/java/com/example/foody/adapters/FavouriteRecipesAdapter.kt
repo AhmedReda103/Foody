@@ -2,6 +2,7 @@ package com.example.foody.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,11 +11,12 @@ import com.example.foody.databinding.FavouriteRecipesRowLayoutBinding
 import com.example.foody.databinding.IngredientsRowLayoutBinding
 import com.example.foody.models.ExtendedIngredient
 import com.example.foody.models.Result
+import com.example.foody.ui.fragments.favourites.FavouriteRecipesFragmentDirections
 
-class FavouriteRecipesAdapter : RecyclerView.Adapter<FavouriteRecipesAdapter.ViewHolder>() {
+class FavouriteRecipesAdapter : RecyclerView.Adapter<FavouriteRecipesAdapter.ViewHolder>()  {
 
 
-    inner class ViewHolder(private val binding: FavouriteRecipesRowLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder( val binding: FavouriteRecipesRowLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(favouritesEntity: FavouritesEntity ) {
             binding.favouritesEntity = favouritesEntity
@@ -48,6 +50,15 @@ class FavouriteRecipesAdapter : RecyclerView.Adapter<FavouriteRecipesAdapter.Vie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val favouriteItem = differ.currentList[position]
         holder.bind(favouriteItem)
+
+        /**
+         * Single OnClickListener
+         */
+        holder.binding.favouriteRecipesRowLayout.setOnClickListener {
+            val action = FavouriteRecipesFragmentDirections.actionFavouriteRecipesFragmentToDetailsActivity(favouriteItem.result)
+            holder.itemView.findNavController().navigate(action)
+        }
+
     }
 
 

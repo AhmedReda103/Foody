@@ -6,7 +6,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.foody.data.Repository
-import com.example.foody.data.database.RecipesEntity
+import com.example.foody.data.database.entities.FavouritesEntity
+import com.example.foody.data.database.entities.RecipesEntity
 import com.example.foody.models.FoodRecipe
 import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,26 @@ class MainViewModel @Inject constructor(application: Application, private val re
 
     /** ROOM DATABASE  */
     var readRecipes : LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
+    var readFavouriteRecipes : LiveData<List<FavouritesEntity>> = repository.local.readFavouriteRecipes().asLiveData()
+
+
+    private fun insertFavouriteRecipe(favouritesEntity: FavouritesEntity){
+        viewModelScope.launch {
+            repository.local.insertFavouriteRecipes(favouritesEntity)
+        }
+    }
+
+    private fun deleteFavouriteRecipe(favouritesEntity: FavouritesEntity){
+        viewModelScope.launch {
+            repository.local.deleteFavouriteRecipes(favouritesEntity)
+        }
+    }
+
+    private fun deleteAllFavouriteRecipe(){
+        viewModelScope.launch {
+            repository.local.deleteAllFavouriteRecipes()
+        }
+    }
 
     private fun insertRecipes(recipesEntity: RecipesEntity){
         viewModelScope.launch {

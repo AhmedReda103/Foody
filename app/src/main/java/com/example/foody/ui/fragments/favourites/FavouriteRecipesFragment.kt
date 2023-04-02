@@ -29,6 +29,8 @@ class FavouriteRecipesFragment : Fragment() {
     private val mAdapter by lazy { FavouriteRecipesAdapter(requireActivity()) }
     private val mainViewModel by viewModels<MainViewModel>()
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

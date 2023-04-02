@@ -12,7 +12,6 @@ import com.example.foody.models.Result
 
 class IngredientsAdapter: RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
 
-    var recipes = emptyList<Result>()
 
     inner class ViewHolder(private val binding: IngredientsRowLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 

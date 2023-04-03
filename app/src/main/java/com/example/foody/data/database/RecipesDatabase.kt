@@ -9,7 +9,7 @@ import com.example.foody.data.database.entities.RecipesEntity
 
 @Database(
     entities = [RecipesEntity::class , FavouritesEntity::class , FoodJokeEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(RecipesTypeConverter::class)

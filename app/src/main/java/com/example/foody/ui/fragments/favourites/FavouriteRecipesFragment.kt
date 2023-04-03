@@ -26,8 +26,8 @@ class FavouriteRecipesFragment : Fragment() {
 
     private var _binding: FragmentFavouriteRecipesBinding? = null
     private val binding get() = _binding!!
-    private val mAdapter by lazy { FavouriteRecipesAdapter(requireActivity()) }
     private val mainViewModel by viewModels<MainViewModel>()
+    private val mAdapter by lazy { FavouriteRecipesAdapter(requireActivity() , mainViewModel) }
 
 
 
@@ -49,5 +49,9 @@ class FavouriteRecipesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext() , LinearLayoutManager.VERTICAL , false)
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        mAdapter.clearContextualActionMode()
+    }
 }

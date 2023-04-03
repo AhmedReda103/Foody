@@ -7,18 +7,22 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foody.MainViewModel
 import com.example.foody.R
 import com.example.foody.data.database.entities.FavouritesEntity
 import com.example.foody.databinding.FavouriteRecipesRowLayoutBinding
 import com.example.foody.ui.fragments.favourites.FavouriteRecipesFragmentDirections
+import com.google.android.material.snackbar.Snackbar
 
-class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
-    RecyclerView.Adapter<FavouriteRecipesAdapter.ViewHolder>(), ActionMode.Callback {
+class FavouriteRecipesAdapter(
+    private val requiredActivity: FragmentActivity, private val mainViewModel: MainViewModel
+) : RecyclerView.Adapter<FavouriteRecipesAdapter.ViewHolder>(), ActionMode.Callback {
 
     private val selectedRecipes = arrayListOf<FavouritesEntity>()
     private val myViewHolders = arrayListOf<ViewHolder>()
     private var multiSelection = false
     lateinit var actionMode: ActionMode
+    private lateinit var rootView: View
 
     inner class ViewHolder(val binding: FavouriteRecipesRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -37,15 +41,13 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
 
     private val diffCallback = object : DiffUtil.ItemCallback<FavouritesEntity>() {
         override fun areItemsTheSame(
-            oldItem: FavouritesEntity,
-            newItem: FavouritesEntity
+            oldItem: FavouritesEntity, newItem: FavouritesEntity
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: FavouritesEntity,
-            newItem: FavouritesEntity
+            oldItem: FavouritesEntity, newItem: FavouritesEntity
         ): Boolean {
             return oldItem.result == newItem.result
         }
@@ -60,6 +62,7 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         myViewHolders.add(holder)
+        rootView = holder.itemView.rootView
         val favouriteItem = differ.currentList[position]
         holder.bind(favouriteItem)
 
@@ -69,7 +72,7 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
         holder.binding.favouriteRecipesRowLayout.setOnClickListener {
             if (multiSelection) {
                 applySelection(holder, favouriteItem)
-            }else{
+            } else {
                 val action =
                     FavouriteRecipesFragmentDirections.actionFavouriteRecipesFragmentToDetailsActivity(
                         favouriteItem.result
@@ -83,12 +86,12 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
          * Long OnClickListener
          */
         holder.binding.favouriteRecipesRowLayout.setOnLongClickListener {
-            if(!multiSelection){
+            if (!multiSelection) {
                 requiredActivity.startActionMode(this)
                 multiSelection = true
-                applySelection(holder , favouriteItem)
+                applySelection(holder, favouriteItem)
                 true
-            }else{
+            } else {
                 multiSelection = false
                 true
             }
@@ -96,7 +99,6 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
         }
 
     }
-
 
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -111,6 +113,15 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
     }
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.delete_favourite_recipes_menu) {
+            selectedRecipes.forEach {
+                mainViewModel.deleteFavouriteRecipe(it)
+            }
+            showSnackBar("${selectedRecipes.size} Recipe/s removed.")
+            multiSelection = false
+            selectedRecipes.clear()
+            actionMode.finish()
+        }
         return true
     }
 
@@ -118,7 +129,7 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
         multiSelection = false
         selectedRecipes.clear()
         myViewHolders.forEach {
-            changeRecipesStyle(it , R.color.cardBackgroundColor , R.color.strokeColor)
+            changeRecipesStyle(it, R.color.cardBackgroundColor, R.color.strokeColor)
         }
         applyStatusBarColor(R.color.statusBarColor)
     }
@@ -135,7 +146,7 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
             applyActionModeTitle()
         } else {
             selectedRecipes.add(favouriteEntity)
-            changeRecipesStyle(holder , R.color.cardBackgroundLightColor , R.color.colorPrimary)
+            changeRecipesStyle(holder, R.color.cardBackgroundLightColor, R.color.colorPrimary)
             applyActionModeTitle()
         }
     }
@@ -143,25 +154,35 @@ class FavouriteRecipesAdapter(private val requiredActivity: FragmentActivity) :
     private fun changeRecipesStyle(holder: ViewHolder, backgroundColor: Int, strokeColor: Int) {
         holder.binding.favouriteRecipesRowLayout.setBackgroundColor(
             ContextCompat.getColor(
-                requiredActivity,
-                backgroundColor
+                requiredActivity, backgroundColor
             )
         )
         holder.binding.favouriteRowCardView.strokeColor =
             ContextCompat.getColor(requiredActivity, strokeColor)
     }
 
-    fun applyActionModeTitle(){
-        when(selectedRecipes.size){
-            0->{
+    private fun applyActionModeTitle() {
+        when (selectedRecipes.size) {
+            0 -> {
                 actionMode.finish()
             }
-            1->{
+            1 -> {
                 actionMode.title = "${selectedRecipes.size} item selected"
             }
-            else->{
+            else -> {
                 actionMode.title = "${selectedRecipes.size} items selected"
             }
+        }
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT)
+            .setAction("okay") {}.show()
+    }
+
+    fun clearContextualActionMode(){
+        if(this::actionMode.isInitialized){
+            actionMode.finish()
         }
     }
 

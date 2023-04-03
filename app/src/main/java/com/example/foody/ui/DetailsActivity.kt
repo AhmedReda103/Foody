@@ -53,7 +53,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.favourite_recipes_menu , menu)
+        menuInflater.inflate(R.menu.details_menu , menu)
          menuItem = menu!!.findItem(R.id.save_to_favourite_menu)
         checkSavedRecipes(menuItem)
         return true

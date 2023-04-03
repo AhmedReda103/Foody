@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:icon="@drawable/ic_star"
-        android:title="@string/save_to_favourite"
-        app:showAsAction="ifRoom"
-        android:iconTint="@color/white"
-        android:id="@+id/save_to_favourite_menu"
-        tools:ignore="UnusedAttribute" />
+        android:id="@+id/delete_all_favourite_recipes_menu"
+        android:title="Delete All "
+        app:showAsAction="never"
+        />
+
+
 
 </menu>

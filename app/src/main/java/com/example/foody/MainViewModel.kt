@@ -7,10 +7,10 @@ import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.foody.data.Repository
 import com.example.foody.data.database.entities.FavouritesEntity
+import com.example.foody.data.database.entities.FoodJokeEntity
 import com.example.foody.data.database.entities.RecipesEntity
 import com.example.foody.models.FoodJoke
 import com.example.foody.models.FoodRecipe
-import com.example.foody.utils.Constants.API_KEY
 import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,10 +25,17 @@ class MainViewModel @Inject constructor(application: Application, private val re
     /** ROOM DATABASE  */
     var readRecipes : LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
     var readFavouriteRecipes : LiveData<List<FavouritesEntity>> = repository.local.readFavouriteRecipes().asLiveData()
+    var readFoodJoke : LiveData<List<FoodJokeEntity>> = repository.local.readFoodJoke().asLiveData()
 
      fun insertFavouriteRecipe(favouritesEntity: FavouritesEntity){
         viewModelScope.launch {
             repository.local.insertFavouriteRecipes(favouritesEntity)
+        }
+    }
+
+    private fun insertFoodJoke(foodJokeEntity: FoodJokeEntity){
+        viewModelScope.launch {
+            repository.local.insertFoodJoke(foodJokeEntity)
         }
     }
 
@@ -44,7 +51,7 @@ class MainViewModel @Inject constructor(application: Application, private val re
         }
     }
 
-     fun insertRecipes(recipesEntity: RecipesEntity){
+     private fun insertRecipes(recipesEntity: RecipesEntity){
         viewModelScope.launch {
             repository.local.insertRecipes(recipesEntity)
         }
@@ -54,7 +61,7 @@ class MainViewModel @Inject constructor(application: Application, private val re
     /** RETROFIT */
     var recipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
     var searchRecipesResponse : MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
-    var readFoodJokes :MutableLiveData<NetworkResult<FoodJoke>> = MutableLiveData()
+    var readFoodJokesResponse :MutableLiveData<NetworkResult<FoodJoke>> = MutableLiveData()
 
     fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
         getRecipesSafeCall(queries)
@@ -68,19 +75,6 @@ class MainViewModel @Inject constructor(application: Application, private val re
         getFoodJokeSafeCall(apiKey)
     }
 
-    private suspend fun getFoodJokeSafeCall(apiKey: String) {
-        readFoodJokes.value = NetworkResult.Loading()
-        if(hasInternetConnection()){
-            try {
-                val response = repository.remote.getFoodJoke(apiKey)
-                readFoodJokes.value = handleFoodJokeResponse(response)
-            }catch (ex : Exception){
-                readFoodJokes.value = NetworkResult.Error(ex.message.toString())
-            }
-        }else{
-            readFoodJokes.value = NetworkResult.Error("No Internet Connection")
-        }
-    }
 
 
 
@@ -96,6 +90,29 @@ class MainViewModel @Inject constructor(application: Application, private val re
         }else{
             searchRecipesResponse.value = NetworkResult.Error("No Internet Connection")
         }
+    }
+
+    private suspend fun getFoodJokeSafeCall(apiKey: String) {
+        readFoodJokesResponse.value = NetworkResult.Loading()
+        if(hasInternetConnection()){
+            try {
+                val response = repository.remote.getFoodJoke(apiKey)
+                readFoodJokesResponse.value = handleFoodJokeResponse(response)
+                val foodJoke = readFoodJokesResponse.value!!.data
+                if(foodJoke!=null){
+                    offlineCacheFoodJokes(foodJoke)
+                }
+            }catch (ex : Exception){
+                readFoodJokesResponse.value = NetworkResult.Error(ex.message.toString())
+            }
+        }else{
+            readFoodJokesResponse.value = NetworkResult.Error("No Internet Connection")
+        }
+    }
+
+    private fun offlineCacheFoodJokes(foodJoke: FoodJoke) {
+        val foodJokeEntity = FoodJokeEntity(foodJoke)
+        insertFoodJoke(foodJokeEntity)
     }
 
     private suspend fun getRecipesSafeCall(queries: Map<String, String>) {

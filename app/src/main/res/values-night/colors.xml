@@ -35,10 +35,10 @@
     <color name="itemColor">@color/mediumGray</color>
 
     //Custom chip color
-    <color name="checkedChipBackgroundColor">#206200EA</color>
-    <color name="ChipBackgroundColor">#F9F9F9</color>
-    <color name="checkedChipTextColor">@color/colorPrimary</color>
-    <color name="ChipTextColor">@color/darkGray</color>
+    <color name="checkedChipBackgroundColor">@color/dark</color>
+    <color name="ChipBackgroundColor">@color/darker</color>
+    <color name="checkedChipTextColor">@color/lightGray</color>
+    <color name="ChipTextColor">@color/lightGray</color>
 
 
     //custom card view style

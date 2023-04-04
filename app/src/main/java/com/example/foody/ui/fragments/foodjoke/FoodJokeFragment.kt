@@ -65,20 +65,17 @@ class FoodJokeFragment : Fragment() , MenuProvider {
     }
 
 
-    private fun loadFromCache(){
+    private fun loadFromCache() {
         lifecycleScope.launch {
-            mainViewModel.readFoodJoke.observe(viewLifecycleOwner){database->
-                if(!database.isNullOrEmpty())
+            mainViewModel.readFoodJoke.observe(viewLifecycleOwner) { database ->
+                if (!database.isNullOrEmpty()) {
                     binding.foodJokeTextView.text = database[0].foodJoke.text
                     foodJoke = database[0].foodJoke.text
+                }
             }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.food_joke_menu , menu)
@@ -95,6 +92,10 @@ class FoodJokeFragment : Fragment() , MenuProvider {
             return true
         }
         return false
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 

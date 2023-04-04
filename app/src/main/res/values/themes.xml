@@ -53,7 +53,7 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="postSplashScreenTheme">@style/Theme.Foody</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
 
     </style>
     
